@@ -1,9 +1,16 @@
 <template>
   <main class="min-h-screen">
-    <div v-if="html" class="p-4">
+    <div v-if="html" class="p-4 relative">
       <iframe
         :srcdoc="html"
         class="w-full overflow-hidden rounded-lg ring-1 ring-slate-900/10 h-screen"
+      />
+      <UButton
+        class="absolute top-6 right-6"
+        size="xs"
+        color="black"
+        label="Download Code"
+        @click="downloadCode"
       />
     </div>
     <UContainer v-else>
@@ -103,5 +110,14 @@ const handleSubmit = async () => {
   });
   html.value = data.value;
   loading.value = false;
+};
+
+const downloadCode = () => {
+  const element = document.createElement("a");
+  const file = new Blob([html.value], { type: "text/html" });
+  element.href = URL.createObjectURL(file);
+  element.download = "index.html";
+  document.body.appendChild(element);
+  element.click();
 };
 </script>
