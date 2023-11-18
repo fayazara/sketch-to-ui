@@ -5,22 +5,13 @@
         :srcdoc="html"
         class="w-full overflow-hidden rounded-lg ring-1 ring-slate-900/10 h-screen"
       />
-      <div class="flex items-center gap-2">
-        <UButton
-          class="absolute top-6 right-6"
-          size="xs"
-          color="black"
-          label="Download Code"
-          @click="downloadCode"
-        />
-        <UButton
-          class="absolute top-6 right-6"
-          size="xs"
-          color="black"
-          label="Host"
-          @click="hostWebsite"
-        />
-      </div>
+      <UButton
+        class="absolute top-6 right-6"
+        size="xs"
+        color="black"
+        label="Download Code"
+        @click="downloadCode"
+      />
     </div>
     <UContainer v-else>
       <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -137,17 +128,4 @@ const downloadCode = () => {
 };
 
 const siteId = ref();
-
-const hostWebsite = async () => {
-  try {
-    if (!html.value) return;
-    siteId.value = nanoid();
-    await storage.setItem(siteId.value, html.value);
-    await copy(`${window.location.origin}/${siteId.value}`);
-    toast.add({ title: "URL Copied to clipboard" });
-    const data = await storage.getItem(siteId.value);
-  } catch (error) {
-    console.log(error);
-  }
-};
 </script>
