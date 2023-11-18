@@ -1,13 +1,13 @@
 <template>
   <main class="min-h-screen">
-    <UContainer>
-      <div v-if="html">
-        <iframe
-          :srcdoc="html"
-          class="w-full overflow-hidden rounded-lg ring-1 ring-slate-900/10 h-screen"
-        />
-      </div>
-      <form v-else @submit.prevent="handleSubmit" class="space-y-4">
+    <div v-if="html" class="p-4">
+      <iframe
+        :srcdoc="html"
+        class="w-full overflow-hidden rounded-lg ring-1 ring-slate-900/10 h-screen"
+      />
+    </div>
+    <UContainer v-else>
+      <form @submit.prevent="handleSubmit" class="space-y-4">
         <div
           ref="dropZoneRef"
           class="rounded-lg aspect-[1] bg-gray-100 dark:bg-gray-900 border dark:border-gray-600 flex items-center justify-center mt-2 transition-all overflow-hidden relative"
