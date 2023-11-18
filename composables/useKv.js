@@ -4,7 +4,7 @@ import memoryDriver from "unstorage/drivers/memory";
 const isDevMode = process.env.NODE_ENV === "development";
 export const useKv = () => {
   const storage = createStorage({
-    driver: isDevMode ? memoryDriver() : cloudflareKVBindingDriver({ binding: "SKETCH" })
+    driver: isDevMode ? memoryDriver() : cloudflareKVBindingDriver({ binding: globalThis.SKETCH })
   });
   return storage;
 }
