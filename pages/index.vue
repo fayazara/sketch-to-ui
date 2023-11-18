@@ -5,13 +5,22 @@
         :srcdoc="html"
         class="w-full overflow-hidden rounded-lg ring-1 ring-slate-900/10 h-screen"
       />
-      <UButton
-        class="absolute top-6 right-6"
-        size="xs"
-        color="black"
-        label="Download Code"
-        @click="downloadCode"
-      />
+      <div class="flex items-center gap-2">
+        <UButton
+          class="absolute top-6 right-6"
+          size="xs"
+          color="black"
+          label="Download Code"
+          @click="downloadCode"
+        />
+        <UButton
+          class="absolute top-6 right-6"
+          size="xs"
+          color="black"
+          label="Host"
+          @click="hostWebsite"
+        />
+      </div>
     </div>
     <UContainer v-else>
       <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -35,7 +44,7 @@
           />
           <UButton
             type="button"
-            v-show="post.thumbnail"
+            v-if="post.thumbnail"
             icon="i-heroicons-x-mark"
             square
             class="absolute top-2 right-2 z-10"
@@ -46,6 +55,7 @@
         </div>
         <UInput
           v-model="post.title"
+          required
           label="Title"
           placeholder="Explain what do you want to do"
         />
@@ -63,12 +73,17 @@
 </template>
 
 <script setup>
-import { useDropZone, useFileDialog } from "@vueuse/core";
+import { useDropZone, useFileDialog, useClipboard } from "@vueuse/core";
+import { nanoid } from "nanoid";
 const dropZoneRef = ref();
+
+const { copy } = useClipboard();
+const toast = useToast();
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 const loading = ref(false);
 const file = ref();
 const imagePreview = useObjectUrl(file);
+const storage = useKv();
 
 function onDrop(files) {
   post.value.thumbnail = files[0];
@@ -119,5 +134,20 @@ const downloadCode = () => {
   element.download = "index.html";
   document.body.appendChild(element);
   element.click();
+};
+
+const siteId = ref();
+
+const hostWebsite = async () => {
+  try {
+    if (!html.value) return;
+    siteId.value = nanoid();
+    await storage.setItem(siteId.value, html.value);
+    await copy(`${window.location.origin}/${siteId.value}`);
+    toast.add({ title: "URL Copied to clipboard" });
+    const data = await storage.getItem(siteId.value);
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
